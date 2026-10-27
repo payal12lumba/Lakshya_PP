@@ -5,74 +5,492 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lakshya</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Linked placement-prep tracker for DS/ML roles: areas, topics and courses tick together.">
+<meta name="description" content="Lakshya — DS/ML placement prep tracker">
+<meta name="theme-color" content="#0B7A6F">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lakshya">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Yatra+One&display=swap">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Tiro+Devanagari+Hindi&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+/* Layout: app shell — sticky header with a target-ring progress mark, a left rail of
+   courses/areas (chips on phones), and a dense, scannable checklist on the right. */
+:root{
+  --bg:#F2F5F7; --surface:#FFFFFF; --sunk:#E8EDF1; --ink:#0E1B2C; --muted:#586777;
+  --line:#D9E0E6; --accent:#0B7A6F; --accent-soft:#D6EEEA; --must:#B57A06; --must-soft:#F6EBD2;
+  --imp:#5B6AA8; --imp-soft:#E3E6F4; --danger:#B3402F;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --f-deva:"Tiro Devanagari Hindi", "Noto Sans Devanagari", serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0B1117; --surface:#121A22; --sunk:#0F161D; --ink:#E5ECF2; --muted:#8B99A7;
+  --line:#22303D; --accent:#3BBFAE; --accent-soft:#12312E; --must:#E2A93B; --must-soft:#33280F;
+  --imp:#9CA8E0; --imp-soft:#1E2340; --danger:#E5735F; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0B1117; --surface:#121A22; --sunk:#0F161D; --ink:#E5ECF2; --muted:#8B99A7;
+  --line:#22303D; --accent:#3BBFAE; --accent-soft:#12312E; --must:#E2A93B; --must-soft:#33280F;
+  --imp:#9CA8E0; --imp-soft:#1E2340; --danger:#E5735F; color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font:15px/1.5 var(--f-body);margin:0;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* header */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;gap:20px;padding-block:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.ring{width:52px;height:52px;flex:none}
+.ring circle{fill:none}
+.brand h1{font:700 22px/1 var(--f-display);letter-spacing:-.01em;margin:0}
+.brand h1 span{font:400 19px/1 var(--f-deva);color:var(--muted);margin-left:6px}
+.brand p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.stats{display:flex;gap:22px;margin-left:auto;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;min-width:0}
+.stat b{font:600 18px/1.1 var(--f-mono);font-variant-numeric:tabular-nums}
+.stat small{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+.actions{display:flex;gap:6px}
+.icon-btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;height:36px;padding:0 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500}
+.icon-btn:hover{border-color:var(--accent)}
+.icon-btn.primary{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+
+/* toolbar */
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-block:14px}
+.seg{display:inline-flex;background:var(--sunk);border:1px solid var(--line);border-radius:9px;padding:3px}
+.seg button{border:0;background:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0 / .08)}
+.search{flex:1 1 220px;min-width:0;position:relative}
+.search input{width:100%;height:36px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:0 12px 0 34px}
+.search svg{position:absolute;left:11px;top:10px;width:16px;height:16px;color:var(--muted)}
+select.sel{height:36px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:0 10px}
+label.tog{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);cursor:pointer;white-space:nowrap}
+
+/* body grid */
+.main{display:grid;grid-template-columns:280px minmax(0,1fr);gap:24px;padding-bottom:64px;align-items:start}
+nav.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - 120px);overflow:auto;padding-right:4px}
+.rail-h{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 10px 8px}
+.rail button{all:unset;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:4px 8px;padding:9px 10px;border-radius:8px}
+.rail button:hover{background:var(--sunk)}
+.rail button[aria-current="true"]{background:var(--surface);box-shadow:inset 0 0 0 1px var(--line)}
+.rail .nm{font-size:13.5px;font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rail .ct{font:12px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.meter{grid-column:1/-1;height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+
+/* group */
+section.group{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:20px;overflow:hidden}
+.g-head{display:flex;gap:16px;align-items:flex-end;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.g-head h2{font:700 20px/1.2 var(--f-display);margin:0;text-wrap:balance}
+.g-head .eyebrow{font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.g-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.g-prog{text-align:right;font:500 13px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.g-prog b{display:block;font:600 22px var(--f-mono);color:var(--ink)}
+ul.items{list-style:none;margin:0;padding:0}
+
+/* item */
+li.it{border-top:1px solid var(--line)}
+li.it:first-child{border-top:0}
+.row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:11px 16px 11px 14px}
+li.it.done .ttl{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.chk{all:unset;cursor:pointer;width:22px;height:22px;border-radius:6px;border:1.6px solid var(--muted);display:grid;place-items:center;margin-top:1px;transition:background .15s,border-color .15s}
+.chk svg{width:14px;height:14px;opacity:0;color:var(--surface)}
+.chk[aria-checked="true"]{background:var(--accent);border-color:var(--accent)}
+.chk[aria-checked="true"] svg{opacity:1}
+.chk[aria-checked="mixed"]{border-color:var(--accent);background:linear-gradient(var(--accent),var(--accent)) center/10px 2px no-repeat}
+.chk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ttl{font-weight:500;min-width:0;overflow-wrap:anywhere}
+.meta{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:5px;font-size:12px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 7px;border-radius:5px;font-size:11.5px;font-weight:500;background:var(--sunk);color:var(--muted);border:0;cursor:default}
+.chip.t-Assignment{background:var(--accent-soft);color:var(--accent)}
+.chip.t-Playlist{background:var(--imp-soft);color:var(--imp)}
+button.chip.area{cursor:pointer;font-family:var(--f-mono)}
+button.chip.area:hover{color:var(--ink)}
+.tier{font:600 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:0 6px;height:20px;border-radius:5px;display:inline-flex;align-items:center}
+.tier.M{background:var(--must-soft);color:var(--must)}
+.tier.I{background:var(--imp-soft);color:var(--imp)}
+.dur{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.sp{color:var(--accent);font-family:var(--f-mono);font-weight:500}
+.side{display:flex;gap:4px;align-items:center}
+.ghost{all:unset;cursor:pointer;width:32px;height:32px;display:grid;place-items:center;border-radius:7px;color:var(--muted)}
+.ghost:hover{background:var(--sunk);color:var(--ink)}
+.ghost svg{width:17px;height:17px}
+.ghost[aria-expanded="true"] svg{transform:rotate(180deg)}
+
+/* panel */
+.panel{padding:4px 16px 16px 48px;display:grid;gap:14px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.steps li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 8px;border-radius:7px}
+.steps li:hover{background:var(--sunk)}
+.steps .chk{width:18px;height:18px;border-radius:5px}
+.steps .chk svg{width:12px;height:12px}
+.steps .lbl{font-size:13.5px;min-width:0;overflow-wrap:anywhere}
+.steps li.d .lbl{color:var(--muted);text-decoration:line-through}
+.steps .k{font:500 11px var(--f-mono);color:var(--muted);margin-right:6px;text-transform:uppercase;letter-spacing:.04em}
+.addstep{display:flex;gap:6px;flex-wrap:wrap}
+.addstep input,.addstep select,.fld input,.fld textarea{border:1px solid var(--line);background:var(--bg);border-radius:7px;height:34px;padding:0 10px;font-size:13px;min-width:0}
+.addstep input[name="t"]{flex:2 1 180px}
+.addstep input[name="u"]{flex:1 1 140px}
+.fld{display:grid;gap:4px}
+.fld span{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.fld textarea{height:auto;min-height:60px;padding:8px 10px;resize:vertical;line-height:1.45}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.also{font-size:12.5px;color:var(--muted)}
+.empty{padding:40px 20px;text-align:center;color:var(--muted)}
+.mobile-nav{display:none}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:8px;font-size:13px;z-index:20}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);max-width:min(520px,calc(100vw - 32px));padding:20px}
+dialog::backdrop{background:rgb(5 10 15 / .45)}
+dialog h3{font:700 18px var(--f-display);margin:0 0 8px}
+dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:10px;font:12px var(--f-mono)}
+.dlg-row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
+
+@media (max-width:860px){
+  .main{grid-template-columns:minmax(0,1fr)}
+  nav.rail{display:none}
+  .mobile-nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+  .mobile-nav button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+  .mobile-nav button[aria-current="true"]{border-color:var(--accent);color:var(--accent)}
+  .stats{margin-left:0;width:100%;justify-content:space-between;gap:12px}
+  .actions{order:-1;margin-left:auto}
+  .panel{padding-left:16px}
+  .two{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
 </head>
 <body>
-<!--BODY-->
 <header class="top">
-  <div class="wrap">
-    <div class="brand-row">
-      <div class="brand"><h1 lang="hi">लक्ष्य<span class="dot">.</span></h1><small>Lakshya · DS/ML placement prep</small></div>
-      <div class="stats">
-        <svg class="ring" id="ring" viewBox="0 0 46 46" role="img" aria-label="Overall progress"></svg>
-        <div class="stat"><b id="st-done">0/0</b><span>items done</span></div>
-        <div class="stat"><b id="st-must">0%</b><span>Must done</span></div>
-        <div class="stat"><b id="st-left">0h</b><span>video left</span></div>
-        <div class="stat"><b id="st-streak">0d</b><span>streak</span></div>
-        <div class="stat oa"><b id="st-oa">–</b><span id="st-oa-l">to mock-OA date</span></div>
-        <div class="activity" id="activity" title="Items ticked per day, last 14 days"></div>
-        <button class="icon-btn" id="theme" type="button" aria-label="Switch light or dark theme">◐</button>
-        <button class="icon-btn" id="open-data" type="button">Backup</button>
+  <div class="wrap top-in">
+    <div class="brand">
+      <svg class="ring" viewBox="0 0 52 52" aria-hidden="true">
+        <circle cx="26" cy="26" r="23" stroke="var(--line)" stroke-width="4"/>
+        <circle id="ringFg" cx="26" cy="26" r="23" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" transform="rotate(-90 26 26)" stroke-dasharray="144.5" stroke-dashoffset="144.5"/>
+        <circle cx="26" cy="26" r="14" stroke="var(--line)" stroke-width="1.5"/>
+        <circle id="ringMust" cx="26" cy="26" r="14" stroke="var(--must)" stroke-width="3" stroke-linecap="round" transform="rotate(-90 26 26)" stroke-dasharray="88" stroke-dashoffset="88"/>
+        <circle cx="26" cy="26" r="4.5" fill="var(--accent)"/>
+      </svg>
+      <div>
+        <h1>Lakshya<span>लक्ष्य</span></h1>
+        <p>DS/ML placement prep · 14 areas · 10 sources</p>
       </div>
     </div>
-    <nav class="tabs" aria-label="Views">
-      <a href="#areas" data-view="areas">1 · Areas → Resource<span class="k" id="k-areas"></span></a>
-      <a href="#topics" data-view="topics">2 · Topic list<span class="k" id="k-topics"></span></a>
-      <a href="#courses" data-view="courses">3 · Course checklist<span class="k" id="k-courses"></span></a>
-    </nav>
+    <div class="stats">
+      <div class="stat"><b id="sPct">0%</b><small>Overall</small></div>
+      <div class="stat"><b id="sMust">0/0</b><small>Must items</small></div>
+      <div class="stat"><b id="sHrs">0h</b><small>Video left</small></div>
+      <div class="stat"><b id="sToday">0</b><small>Done today</small></div>
+    </div>
+    <div class="actions">
+      <button class="icon-btn primary" id="installBtn" hidden>Install app</button>
+      <button class="icon-btn" id="dataBtn" title="Back up or restore your progress">Backup</button>
+      <button class="icon-btn" id="themeBtn" title="Switch theme" aria-label="Switch theme">◐</button>
+    </div>
   </div>
 </header>
 
 <div class="wrap">
-  <div class="toolbar">
-    <div class="search"><input id="q" type="search" placeholder="Search videos, lectures, assignments…" aria-label="Search"></div>
-    <div id="filters" class="toolbar" style="padding:0">
-      <div class="seg" id="tier" role="group" aria-label="Tier">
-        <button type="button" data-tier="All">All</button>
-        <button type="button" data-tier="Must">Must</button>
-        <button type="button" data-tier="Important">Important</button>
-      </div>
-      <label class="check-toggle"><input type="checkbox" id="hide"> Hide done</label>
+  <div class="bar">
+    <div class="seg" role="group" aria-label="View">
+      <button id="vCourse" aria-pressed="true">Courses</button>
+      <button id="vArea" aria-pressed="false">Areas</button>
+      <button id="vNext" aria-pressed="false">Up next</button>
     </div>
+    <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search 355 items…" aria-label="Search items"></label>
+    <select class="sel" id="fTier" aria-label="Tier"><option value="">All tiers</option><option value="M">Must</option><option value="I">Important</option></select>
+    <select class="sel" id="fType" aria-label="Type"><option value="">All types</option></select>
+    <label class="tog"><input type="checkbox" id="fHide"> Hide done</label>
   </div>
-  <main id="view"></main>
+  <div class="mobile-nav" id="mnav"></div>
+  <div class="main">
+    <nav class="rail" id="rail" aria-label="Sections"></nav>
+    <div id="list"></div>
+  </div>
 </div>
 
-<dialog id="data" aria-labelledby="data-h">
-  <h2 id="data-h">Backup &amp; restore</h2>
-  <p>Ticks are saved in this browser. To move them to another device, copy or download this backup and restore it there.</p>
-  <textarea id="io" aria-label="Backup text" spellcheck="false"></textarea>
-  <div class="row">
-    <button class="btn primary" id="copy" type="button">Copy</button>
-    <button class="btn" id="download" type="button">Download file</button>
-    <label class="btn" for="file">Load file</label><input id="file" type="file" accept="application/json,.json" hidden>
-    <button class="btn" id="restore" type="button">Restore from text</button>
-    <button class="btn danger" id="reset" type="button">Clear all ticks</button>
-    <button class="btn" id="close-data" type="button" style="margin-left:auto">Close</button>
+<dialog id="dlg">
+  <h3>Backup &amp; restore</h3>
+  <p style="margin:0 0 10px;color:var(--muted);font-size:13px">Progress is saved in this browser. Copy the backup below to move it to your phone or another laptop, then paste it there and press Restore.</p>
+  <textarea id="dlgTxt" spellcheck="false" aria-label="Backup data"></textarea>
+  <div class="dlg-row">
+    <button class="icon-btn" id="dlgFile">Download .json</button>
+    <button class="icon-btn" id="dlgCopy">Copy</button>
+    <button class="icon-btn" id="dlgRestore">Restore from text</button>
+    <button class="icon-btn primary" id="dlgClose">Close</button>
   </div>
-  <div class="row" id="confirm-reset" hidden>
-    <span>Clear every tick? This can't be undone without a backup.</span>
-    <button class="btn danger" id="reset-yes" type="button">Yes, clear</button>
-    <button class="btn" id="reset-no" type="button">Keep</button>
-  </div>
-  <div class="msg" id="msg" role="status"></div>
 </dialog>
-<!--/BODY-->
-<script src="assets/data.js"></script>
-<script src="assets/app.js"></script>
+
+<script src="data.js"></script>
+<script>
+(() => {
+const KEY = "lakshya.v2";
+const COURSES = [], ITEMS = [], BY = {};
+const YT = new Set(["cx","cxo","mk","cwh","cwp","dsa"]);
+const UNIT = {videos:"Video",video:"Video",lessons:"Lesson",lectures:"Lecture"};
+
+/* ---------- parse data ---------- */
+function hash(s){let h=5381;for(const c of s)h=((h<<5)+h+c.codePointAt(0))>>>0;return h.toString(36)}
+function secs(d){if(!d)return 0;return d.split(":").map(Number).reduce((a,b)=>a*60+b,0)}
+function typeOf(c,t){
+  if(c==="self")return "Practice"; if(c==="iqb")return "Question set";
+  if(/^(A\d+ —|Assignment)/.test(t))return "Assignment";
+  if(/\(\d+ (videos?|lessons|lectures)\)/.test(t))return "Playlist";
+  if(c==="ext")return /NeetCode|LeetCode|IndiaBix|timed|Write from scratch|puzzles/i.test(t)?"Practice":"Reading";
+  if(/^(Lecture|M\d+ L\d+)/.test(t))return "Lecture";
+  return "Video";
+}
+let cur=null;
+for(const raw of LAKSHYA_RAW.split("\n")){
+  const line=raw.trim(); if(!line)continue;
+  if(line.startsWith("#")){const [code,name]=line.slice(1).split("|").map(s=>s.trim());cur={code,name,ids:[]};COURSES.push(cur);continue}
+  const [title,dur,areas,tier]=line.split("|");
+  const id=cur.code+"-"+hash(title);
+  const m=title.match(/\((\d+) (videos?|lessons|lectures)\)/);
+  const it={id,course:cur.code,title,dur,sec:secs(dur),areas:areas.split(",").map(Number),tier,type:typeOf(cur.code,title),
+    parts:m&&+m[1]>1?{n:+m[1],unit:UNIT[m[2]]}:null};
+  ITEMS.push(it);BY[id]=it;cur.ids.push(id);
+}
+const AREAS=LAKSHYA_AREAS.map(([n,name,res,backup])=>({n,name,res,backup,ids:ITEMS.filter(i=>i.areas.includes(n)).map(i=>i.id)}));
+const COURSE_NAME=Object.fromEntries(COURSES.map(c=>[c.code,c.name]));
+const TYPES=[...new Set(ITEMS.map(i=>i.type))].sort();
+fType.insertAdjacentHTML("beforeend",TYPES.map(t=>`<option>${t}</option>`).join(""));
+
+/* ---------- state ---------- */
+let S={done:{},parts:{},steps:{},links:{},notes:{},view:"course",sel:null};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)S=Object.assign(S,s)}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const open=new Set();
+
+/* steps = built-in parts (for playlists) + steps the user added */
+function stepsOf(it){
+  const out=[];
+  if(it.parts){const pd=S.parts[it.id]||[];for(let k=0;k<it.parts.n;k++)out.push({kind:it.parts.unit,label:`${it.parts.unit} ${k+1} of ${it.parts.n}`,done:!!pd[k],part:k})}
+  (S.steps[it.id]||[]).forEach((s,k)=>out.push({kind:s.k,label:s.t,url:s.u,done:!!s.d,custom:k}));
+  return out;
+}
+function isDone(id){return !!S.done[id]}
+function setDone(id,v){
+  const it=BY[id];
+  if(v)S.done[id]=S.done[id]||Date.now(); else delete S.done[id];
+  if(it.parts)S.parts[id]=Array(it.parts.n).fill(v);
+  (S.steps[id]||[]).forEach(s=>s.d=v);
+}
+function syncFromSteps(id){
+  const st=stepsOf(BY[id]); if(!st.length)return;
+  const all=st.every(s=>s.done);
+  if(all)S.done[id]=S.done[id]||Date.now(); else delete S.done[id];
+}
+function checkState(it){
+  if(isDone(it.id))return "true";
+  const st=stepsOf(it);return st.some(s=>s.done)?"mixed":"false";
+}
+function linkOf(it){
+  if(S.links[it.id])return S.links[it.id];
+  const q=encodeURIComponent(it.title.replace(/\(.*?\)/g,"")+" "+COURSE_NAME[it.course].split("—")[0]);
+  if(YT.has(it.course))return "https://www.youtube.com/results?search_query="+q;
+  if(it.course==="iqb"||it.course==="self")return "";
+  return "https://www.google.com/search?q="+q;
+}
+
+/* ---------- helpers ---------- */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const CHECK=`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg>`;
+const I_LINK=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>`;
+const I_DOWN=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`;
+function fmtH(sec){const h=sec/3600;return h>=10?Math.round(h)+"h":h.toFixed(1)+"h"}
+function prog(ids){const d=ids.filter(isDone).length;return {d,n:ids.length,p:ids.length?d/ids.length:0}}
+function toast(t){const el=document.createElement("div");el.className="toast";el.textContent=t;document.body.append(el);setTimeout(()=>el.remove(),1800)}
+
+function passes(it){
+  const q=document.getElementById("q").value.trim().toLowerCase();
+  if(q&&!(it.title.toLowerCase().includes(q)||(S.notes[it.id]||"").toLowerCase().includes(q)))return false;
+  if(fTier.value&&it.tier!==fTier.value)return false;
+  if(fType.value&&it.type!==fType.value)return false;
+  if(fHide.checked&&isDone(it.id))return false;
+  return true;
+}
+
+/* ---------- render ---------- */
+function rowHTML(it){
+  const st=stepsOf(it), sd=st.filter(s=>s.done).length, link=linkOf(it), ex=open.has(it.id);
+  const areas=it.areas.map(n=>`<button class="chip area" data-area="${n}" title="${esc(AREAS[n-1].name)}">A${n}</button>`).join("");
+  const otherPlaces = S.view==="course" ? it.areas.map(n=>"Area "+n+" · "+AREAS[n-1].name).join(", ") : COURSE_NAME[it.course];
+  return `<li class="it${isDone(it.id)?" done":""}" data-id="${it.id}">
+  <div class="row">
+    <button class="chk" role="checkbox" aria-checked="${checkState(it)}" aria-label="Mark done: ${esc(it.title)}" data-act="toggle">${CHECK}</button>
+    <div style="min-width:0">
+      <div class="ttl">${esc(it.title)}</div>
+      <div class="meta">
+        <span class="tier ${it.tier}">${it.tier==="M"?"Must":"Imp."}</span>
+        <span class="chip t-${it.type.replace(/ /g,"")}">${it.type}</span>
+        ${it.dur?`<span class="dur">${it.dur}</span>`:""}
+        ${st.length?`<span class="sp">${sd}/${st.length} steps</span>`:""}
+        ${S.view!=="course"?`<span>${esc(COURSE_NAME[it.course])}</span>`:""}
+        ${areas}
+      </div>
+    </div>
+    <div class="side">
+      ${link?`<a class="ghost" href="${esc(link)}" target="_blank" rel="noopener" title="${S.links[it.id]?"Open your link":"Find this on the web"}" aria-label="Open link">${I_LINK}</a>`:""}
+      <button class="ghost" data-act="expand" aria-expanded="${ex}" aria-label="Steps, link and notes">${I_DOWN}</button>
+    </div>
+  </div>
+  ${ex?`<div class="panel">
+    ${st.length?`<ul class="steps">${st.map((s,k)=>`<li class="${s.done?"d":""}">
+      <button class="chk" role="checkbox" aria-checked="${s.done}" data-act="step" data-k="${k}" aria-label="${esc(s.label)}">${CHECK}</button>
+      <span class="lbl"><span class="k">${esc(s.kind)}</span>${s.url?`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)}</a>`:esc(s.label)}</span>
+      ${s.custom!==undefined?`<button class="ghost" data-act="rmstep" data-c="${s.custom}" aria-label="Remove step" title="Remove step">×</button>`:"<span></span>"}
+    </li>`).join("")}</ul>`:""}
+    <form class="addstep" data-act="addstep">
+      <select name="k" aria-label="Step type"><option>Video</option><option>Assignment</option><option>Notes</option><option>Practice</option><option>Reading</option><option>Revision</option></select>
+      <input name="t" id="st-${it.id}" placeholder="Add a step — e.g. Solve the notebook, revise notes" aria-label="Step name" required>
+      <input name="u" placeholder="Link (optional)" aria-label="Step link" inputmode="url">
+      <button class="icon-btn" type="submit">Add step</button>
+    </form>
+    <div class="two">
+      <label class="fld"><span>Your link for this item</span><input id="ln-${it.id}" data-act="link" value="${esc(S.links[it.id]||"")}" placeholder="Paste the exact video / assignment URL" inputmode="url"></label>
+      <label class="fld"><span>Notes</span><textarea id="nt-${it.id}" data-act="note" placeholder="Key formula, doubt, timestamp…">${esc(S.notes[it.id]||"")}</textarea></label>
+    </div>
+    <div class="also">Same tick also counts in: ${esc(otherPlaces)}</div>
+  </div>`:""}
+</li>`;
+}
+
+function groupsForView(){
+  if(S.view==="course")return COURSES.map(c=>({key:"c:"+c.code,eyebrow:"Course",title:c.name,sub:courseSub(c),ids:c.ids}));
+  if(S.view==="area")return AREAS.map(a=>({key:"a:"+a.n,eyebrow:"Area "+a.n,title:a.name,sub:`Study from ${a.res}. Backup for gaps: ${a.backup}.`,ids:a.ids}));
+  // up next: first 3 open Must items per area, then Important
+  const ids=[];
+  for(const a of AREAS){let k=0;for(const id of a.ids){if(!isDone(id)&&BY[id].tier==="M"&&!ids.includes(id)){ids.push(id);if(++k===3)break}}}
+  return [{key:"next",eyebrow:"Up next",title:"Next Must items, three per area",sub:"Tick items off and this list refills from the same area.",ids}];
+}
+function courseSub(c){const s=c.ids.reduce((a,id)=>a+BY[id].sec,0);return `${c.ids.length} items${s?` · ~${fmtH(s)} of timed video`:""}`}
+
+function render(){
+  const gs=groupsForView();
+  if(S.sel&&!gs.some(g=>g.key===S.sel))S.sel=null;
+  // rail
+  const railHTML=gs.length>1?`<div class="rail-h">${S.view==="course"?"Courses":"Syllabus areas"}</div>`+
+    `<button data-sel="" aria-current="${!S.sel}"><span class="nm">All</span><span class="ct">${prog(ITEMS.map(i=>i.id)).d}/${ITEMS.length}</span><span class="meter"><i style="width:${prog(ITEMS.map(i=>i.id)).p*100}%"></i></span></button>`+
+    gs.map(g=>{const p=prog(g.ids);return `<button data-sel="${g.key}" aria-current="${S.sel===g.key}"><span class="nm">${S.view==="area"?g.eyebrow.replace("Area ","A")+" · ":""}${esc(g.title.replace(/^CampusX — |^CodeWithHarry — /,m=>m))}</span><span class="ct">${p.d}/${p.n}</span><span class="meter"><i style="width:${p.p*100}%"></i></span></button>`}).join(""):"";
+  rail.innerHTML=railHTML;
+  mnav.innerHTML=gs.length>1?`<button data-sel="" aria-current="${!S.sel}">All</button>`+gs.map(g=>{const p=prog(g.ids);return `<button data-sel="${g.key}" aria-current="${S.sel===g.key}">${esc(S.view==="area"?"A"+g.key.slice(2)+" "+g.title:g.title.replace(/ —.*$/,"").replace("Mitesh Khapra","CS7015"))} · ${Math.round(p.p*100)}%</button>`}).join(""):"";
+  // list
+  const shown=gs.filter(g=>!S.sel||g.key===S.sel);
+  let html="";
+  for(const g of shown){
+    const vis=g.ids.map(id=>BY[id]).filter(passes);
+    if(!vis.length)continue;
+    const p=prog(g.ids);
+    html+=`<section class="group" id="g-${g.key.replace(":","-")}"><div class="g-head"><div style="min-width:0"><div class="eyebrow">${esc(g.eyebrow)}</div><h2>${esc(g.title)}</h2><p>${esc(g.sub)}</p></div>
+    <div class="g-prog"><b>${Math.round(p.p*100)}%</b>${p.d} of ${p.n} done</div></div><ul class="items">${vis.map(rowHTML).join("")}</ul></section>`;
+  }
+  list.innerHTML=html||`<div class="empty">${S.view==="next"?"Every Must item is done. Switch to Areas for the Important ones.":"Nothing matches these filters."}</div>`;
+  stats();
+}
+function stats(){
+  const all=prog(ITEMS.map(i=>i.id));
+  const must=ITEMS.filter(i=>i.tier==="M").map(i=>i.id), pm=prog(must);
+  sPct.textContent=Math.round(all.p*100)+"%";
+  sMust.textContent=pm.d+"/"+pm.n;
+  sHrs.textContent=fmtH(ITEMS.filter(i=>!isDone(i.id)).reduce((a,i)=>a+i.sec,0));
+  const t0=new Date();t0.setHours(0,0,0,0);
+  sToday.textContent=Object.values(S.done).filter(ts=>ts>=t0.getTime()).length;
+  ringFg.style.strokeDashoffset=144.5*(1-all.p);
+  ringMust.style.strokeDashoffset=88*(1-pm.p);
+}
+function refreshRow(id){
+  document.querySelectorAll(`li.it[data-id="${id}"]`).forEach(li=>{li.outerHTML=rowHTML(BY[id])});
+  // update group/rail numbers without rebuilding the list
+  const gs=groupsForView();
+  document.querySelectorAll("section.group").forEach(sec=>{
+    const g=gs.find(x=>"g-"+x.key.replace(":","-")===sec.id); if(!g)return;
+    const p=prog(g.ids); sec.querySelector(".g-prog").innerHTML=`<b>${Math.round(p.p*100)}%</b>${p.d} of ${p.n} done`;
+  });
+  document.querySelectorAll("#rail button[data-sel]").forEach(b=>{
+    const key=b.dataset.sel; const ids=key?gs.find(g=>g.key===key)?.ids||[]:ITEMS.map(i=>i.id); const p=prog(ids);
+    b.querySelector(".ct").textContent=p.d+"/"+p.n; b.querySelector(".meter i").style.width=p.p*100+"%";
+  });
+  stats();
+}
+
+/* ---------- events ---------- */
+list.addEventListener("click",e=>{
+  const li=e.target.closest("li.it"); if(!li)return; const id=li.dataset.id;
+  const a=e.target.closest("[data-act],[data-area]"); if(!a)return;
+  if(a.dataset.area){setView("area","a:"+a.dataset.area);return}
+  const act=a.dataset.act;
+  if(act==="toggle"){const v=!isDone(id);setDone(id,v);save();
+    if(fHide.checked||S.view==="next")render();else refreshRow(id);
+    if(v)toast("Done · counts in every view")}
+  else if(act==="expand"){open.has(id)?open.delete(id):open.add(id);refreshRow(id)}
+  else if(act==="step"){const st=stepsOf(BY[id])[+a.dataset.k];
+    if(st.part!==undefined){const arr=S.parts[id]||Array(BY[id].parts.n).fill(false);arr[st.part]=!st.done;S.parts[id]=arr}
+    else S.steps[id][st.custom].d=!st.done;
+    syncFromSteps(id);save();refreshRow(id)}
+  else if(act==="rmstep"){S.steps[id].splice(+a.dataset.c,1);syncFromSteps(id);save();refreshRow(id)}
+});
+list.addEventListener("submit",e=>{
+  e.preventDefault();const f=e.target,id=f.closest("li.it").dataset.id;
+  const t=f.t.value.trim();if(!t)return;
+  (S.steps[id]=S.steps[id]||[]).push({k:f.k.value,t,u:f.u.value.trim(),d:false});
+  delete S.done[id]; save(); refreshRow(id);
+  setTimeout(()=>document.getElementById("st-"+id)?.focus(),0);
+});
+list.addEventListener("input",e=>{
+  const li=e.target.closest("li.it");if(!li)return;const id=li.dataset.id;
+  if(e.target.dataset.act==="link"){const v=e.target.value.trim();v?S.links[id]=v:delete S.links[id];save()}
+  if(e.target.dataset.act==="note"){const v=e.target.value;v?S.notes[id]=v:delete S.notes[id];save()}
+});
+list.addEventListener("change",e=>{if(e.target.dataset.act==="link"){const id=e.target.closest("li.it").dataset.id;refreshRow(id)}});
+function onSel(e){const b=e.target.closest("button[data-sel]");if(!b)return;S.sel=b.dataset.sel||null;save();render();window.scrollTo({top:0})}
+rail.addEventListener("click",onSel);mnav.addEventListener("click",onSel);
+function setView(v,sel=null){S.view=v;S.sel=sel;save();
+  [["course",vCourse],["area",vArea],["next",vNext]].forEach(([k,b])=>b.setAttribute("aria-pressed",k===v));render();window.scrollTo({top:0})}
+vCourse.onclick=()=>setView("course");vArea.onclick=()=>setView("area");vNext.onclick=()=>setView("next");
+let qt;q.addEventListener("input",()=>{clearTimeout(qt);qt=setTimeout(render,120)});
+[fTier,fType,fHide].forEach(el=>el.addEventListener("change",render));
+
+/* theme */
+function applyTheme(){const t=(()=>{try{return localStorage.getItem(KEY+".theme")}catch(e){return null}})();if(t)document.documentElement.dataset.theme=t}
+themeBtn.onclick=()=>{const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+  const t=dark?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem(KEY+".theme",t)}catch(e){}};
+applyTheme();
+
+/* backup */
+dataBtn.onclick=()=>{dlgTxt.value=JSON.stringify({app:"lakshya",v:2,at:new Date().toISOString(),done:S.done,parts:S.parts,steps:S.steps,links:S.links,notes:S.notes});dlg.showModal?dlg.showModal():dlg.setAttribute("open","")};
+dlgClose.onclick=()=>dlg.close();
+let framed=false;try{framed=window.top!==window}catch(e){framed=true}
+if(framed)dlgFile.hidden=true;
+dlgCopy.onclick=()=>{navigator.clipboard?.writeText(dlgTxt.value).then(()=>toast("Backup copied"),()=>{dlgTxt.select();toast("Selected — press Ctrl/Cmd+C")})??(dlgTxt.select())};
+dlgFile.onclick=()=>{try{const b=new Blob([dlgTxt.value],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="lakshya-backup-"+new Date().toISOString().slice(0,10)+".json";document.body.append(a);a.click();a.remove()}catch(e){toast("Download blocked here — use Copy")}};
+dlgRestore.onclick=()=>{try{const d=JSON.parse(dlgTxt.value);if(d.app!=="lakshya")throw 0;
+  Object.assign(S,{done:d.done||{},parts:d.parts||{},steps:d.steps||{},links:d.links||{},notes:d.notes||{}});save();render();dlg.close();toast("Progress restored")}
+  catch(e){toast("That text isn't a Lakshya backup. Paste the full backup and try again.")}};
+
+/* install (PWA) */
+let deferred=null;
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;installBtn.hidden=false});
+installBtn.onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;installBtn.hidden=true};
+addEventListener("appinstalled",()=>{installBtn.hidden=true;toast("Lakshya installed")});
+if("serviceWorker" in navigator && location.protocol==="https:" && !location.hostname.endsWith("claude.ai")){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+
+setView(S.view||"course",S.sel);
+})();
+</script>
+
 </body>
 </html>
