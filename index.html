@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lakshya</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Linked placement-prep tracker for DS/ML roles: areas, topics and courses tick together.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Yatra+One&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<!--BODY-->
+<header class="top">
+  <div class="wrap">
+    <div class="brand-row">
+      <div class="brand"><h1 lang="hi">लक्ष्य<span class="dot">.</span></h1><small>Lakshya · DS/ML placement prep</small></div>
+      <div class="stats">
+        <svg class="ring" id="ring" viewBox="0 0 46 46" role="img" aria-label="Overall progress"></svg>
+        <div class="stat"><b id="st-done">0/0</b><span>items done</span></div>
+        <div class="stat"><b id="st-must">0%</b><span>Must done</span></div>
+        <div class="stat"><b id="st-left">0h</b><span>video left</span></div>
+        <div class="stat"><b id="st-streak">0d</b><span>streak</span></div>
+        <div class="stat oa"><b id="st-oa">–</b><span id="st-oa-l">to mock-OA date</span></div>
+        <div class="activity" id="activity" title="Items ticked per day, last 14 days"></div>
+        <button class="icon-btn" id="theme" type="button" aria-label="Switch light or dark theme">◐</button>
+        <button class="icon-btn" id="open-data" type="button">Backup</button>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="Views">
+      <a href="#areas" data-view="areas">1 · Areas → Resource<span class="k" id="k-areas"></span></a>
+      <a href="#topics" data-view="topics">2 · Topic list<span class="k" id="k-topics"></span></a>
+      <a href="#courses" data-view="courses">3 · Course checklist<span class="k" id="k-courses"></span></a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="toolbar">
+    <div class="search"><input id="q" type="search" placeholder="Search videos, lectures, assignments…" aria-label="Search"></div>
+    <div id="filters" class="toolbar" style="padding:0">
+      <div class="seg" id="tier" role="group" aria-label="Tier">
+        <button type="button" data-tier="All">All</button>
+        <button type="button" data-tier="Must">Must</button>
+        <button type="button" data-tier="Important">Important</button>
+      </div>
+      <label class="check-toggle"><input type="checkbox" id="hide"> Hide done</label>
+    </div>
+  </div>
+  <main id="view"></main>
+</div>
+
+<dialog id="data" aria-labelledby="data-h">
+  <h2 id="data-h">Backup &amp; restore</h2>
+  <p>Ticks are saved in this browser. To move them to another device, copy or download this backup and restore it there.</p>
+  <textarea id="io" aria-label="Backup text" spellcheck="false"></textarea>
+  <div class="row">
+    <button class="btn primary" id="copy" type="button">Copy</button>
+    <button class="btn" id="download" type="button">Download file</button>
+    <label class="btn" for="file">Load file</label><input id="file" type="file" accept="application/json,.json" hidden>
+    <button class="btn" id="restore" type="button">Restore from text</button>
+    <button class="btn danger" id="reset" type="button">Clear all ticks</button>
+    <button class="btn" id="close-data" type="button" style="margin-left:auto">Close</button>
+  </div>
+  <div class="row" id="confirm-reset" hidden>
+    <span>Clear every tick? This can't be undone without a backup.</span>
+    <button class="btn danger" id="reset-yes" type="button">Yes, clear</button>
+    <button class="btn" id="reset-no" type="button">Keep</button>
+  </div>
+  <div class="msg" id="msg" role="status"></div>
+</dialog>
+<!--/BODY-->
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
