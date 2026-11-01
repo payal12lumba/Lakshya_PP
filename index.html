@@ -1,8 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Lakshya</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Lakshya — DS/ML placement prep tracker">
@@ -16,8 +12,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Tiro+Devanagari+Hindi&display=swap">
 <style>
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-[hidden]{display:none!important}
 /* Layout: app shell — sticky header with a target-ring progress mark, a left rail of
    courses/areas (chips on phones), and a dense, scannable checklist on the right. */
 :root{
@@ -167,11 +161,71 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   .panel{padding-left:16px}
   .two{grid-template-columns:1fr}
 }
+/* filters wrapper + plan view */
+.filters{display:contents}
+body.plan-mode .filters{display:none}
+body.plan-mode .main{grid-template-columns:minmax(0,1fr)}
+body.plan-mode nav.rail,body.plan-mode .mobile-nav{display:none}
+.pin{color:var(--muted)}
+.ghost.pinned{color:var(--must)}
+.plan{display:grid;gap:20px;padding-bottom:40px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.pcard>h3,.pcard>summary{font:700 17px/1.2 var(--f-display);margin:0;padding:16px 20px;border-bottom:1px solid var(--line)}
+.pcard>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.pcard>summary::-webkit-details-marker{display:none}
+.pcard>summary small{font:500 12px var(--f-body);color:var(--muted)}
+.pcard:not([open])>summary{border-bottom:0}
+.settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;padding:16px 20px}
+.settings .fld input,.settings .fld select{height:36px;border:1px solid var(--line);border-radius:7px;background:var(--bg);padding:0 10px;width:100%}
+.dows{display:flex;gap:4px;flex-wrap:wrap}
+.dows label{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:32px;border:1px solid var(--line);border-radius:7px;font-size:12.5px;cursor:pointer;color:var(--muted)}
+.dows input{position:absolute;opacity:0;pointer-events:none}
+.dows label:has(input:checked){background:var(--sunk);color:var(--danger);border-color:var(--danger);text-decoration:line-through}
+.dows label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.verdict{display:flex;gap:16px;align-items:center;padding:16px 20px;flex-wrap:wrap}
+.verdict .big{font:700 20px/1.2 var(--f-display)}
+.verdict.ok .big{color:var(--accent)} .verdict.bad .big{color:var(--danger)}
+.verdict p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.vnums{display:flex;gap:22px;margin-left:auto;flex-wrap:wrap}
+.sugg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0}
+.sbox{padding:14px 20px;border-top:1px solid var(--line)}
+.sbox h4{margin:0 0 8px;font:600 11px var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.sbox p{margin:0 0 6px;font-size:13.5px}
+.mini{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.mini li{display:flex;gap:8px;align-items:center;font-size:13.5px;min-width:0}
+.mini li span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.mini button{flex:none}
+.sm-btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;height:26px;padding:0 9px;font-size:12px;cursor:pointer;color:var(--ink)}
+.sm-btn:hover{border-color:var(--accent);color:var(--accent)}
+.days{display:grid;gap:12px}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.day.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.day.past-target{border-style:dashed}
+.d-head{display:flex;align-items:baseline;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.d-head b{font:700 15px var(--f-display)}
+.d-head .tag{font:600 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:5px;background:var(--accent-soft);color:var(--accent)}
+.d-head .tag.rev{background:var(--imp-soft);color:var(--imp)}
+.d-head .tag.late{background:var(--must-soft);color:var(--must)}
+.d-head .load{margin-left:auto;font:500 12px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.day.off .d-head{border-bottom:0;color:var(--muted)}
+.prow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:9px 16px;border-top:1px solid var(--line)}
+.prow:first-of-type{border-top:0}
+.prow.dn .ttl{color:var(--muted);text-decoration:line-through}
+.prow .sub{font-size:12px;color:var(--muted);margin-top:3px;display:flex;gap:6px 8px;flex-wrap:wrap;align-items:center}
+.prow.fixed .ttl{font-style:italic}
+.more{display:flex;justify-content:center}
+.modebar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.modehint{font-size:12.5px;color:var(--muted)}
+.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));border-top:1px solid var(--line)}
+.wk{padding:12px 20px;border-right:1px solid var(--line)}
+.wk-h{display:flex;gap:8px;align-items:baseline}.wk-h b{font:700 14px var(--f-display)}.wk-h span{font-size:11.5px;color:var(--muted)}
+.wk-t{font-size:13px;margin-top:4px;font-weight:500}.wk-s{font:11.5px var(--f-mono);color:var(--muted);margin-top:2px}
+.note{color:var(--imp)}
+.cutl{padding:12px 20px 16px}.cutl em{color:var(--muted);font-style:normal;font-size:12px}
+@media (max-width:860px){.weeks{grid-template-columns:1fr}.wk{border-right:0;border-bottom:1px solid var(--line);padding:10px 16px}.wk-h span{white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.stat b{font-size:16px}.stat small{font-size:9.5px;letter-spacing:.03em}.vnums{margin-left:0}.settings{grid-template-columns:1fr 1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
-</head>
-<body>
 <header class="top">
   <div class="wrap top-in">
     <div class="brand">
@@ -192,6 +246,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
       <div class="stat"><b id="sMust">0/0</b><small>Must items</small></div>
       <div class="stat"><b id="sHrs">0h</b><small>Video left</small></div>
       <div class="stat"><b id="sToday">0</b><small>Done today</small></div>
+      <div class="stat"><b id="sStreak">0</b><small>Day streak</small></div>
     </div>
     <div class="actions">
       <button class="icon-btn primary" id="installBtn" hidden>Install app</button>
@@ -204,14 +259,15 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 <div class="wrap">
   <div class="bar">
     <div class="seg" role="group" aria-label="View">
+      <button id="vPlan" aria-pressed="false">Plan</button>
       <button id="vCourse" aria-pressed="true">Courses</button>
       <button id="vArea" aria-pressed="false">Areas</button>
       <button id="vNext" aria-pressed="false">Up next</button>
     </div>
-    <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search 355 items…" aria-label="Search items"></label>
+    <div class="filters" id="filters"><label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search 355 items…" aria-label="Search items"></label>
     <select class="sel" id="fTier" aria-label="Tier"><option value="">All tiers</option><option value="M">Must</option><option value="I">Important</option></select>
     <select class="sel" id="fType" aria-label="Type"><option value="">All types</option></select>
-    <label class="tog"><input type="checkbox" id="fHide"> Hide done</label>
+    <label class="tog"><input type="checkbox" id="fHide"> Hide done</label></div>
   </div>
   <div class="mobile-nav" id="mnav"></div>
   <div class="main">
@@ -268,7 +324,7 @@ const TYPES=[...new Set(ITEMS.map(i=>i.type))].sort();
 fType.insertAdjacentHTML("beforeend",TYPES.map(t=>`<option>${t}</option>`).join(""));
 
 /* ---------- state ---------- */
-let S={done:{},parts:{},steps:{},links:{},notes:{},view:"course",sel:null};
+let S={done:{},parts:{},steps:{},links:{},notes:{},view:"plan",sel:null};
 try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)S=Object.assign(S,s)}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const open=new Set();
@@ -309,6 +365,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const CHECK=`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg>`;
 const I_LINK=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>`;
 const I_DOWN=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`;
+const I_PIN=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l3 3.2v1H6v-1z"/></svg>`;
 function fmtH(sec){const h=sec/3600;return h>=10?Math.round(h)+"h":h.toFixed(1)+"h"}
 function prog(ids){const d=ids.filter(isDone).length;return {d,n:ids.length,p:ids.length?d/ids.length:0}}
 function toast(t){const el=document.createElement("div");el.className="toast";el.textContent=t;document.body.append(el);setTimeout(()=>el.remove(),1800)}
@@ -343,6 +400,7 @@ function rowHTML(it){
     </div>
     <div class="side">
       ${link?`<a class="ghost" href="${esc(link)}" target="_blank" rel="noopener" title="${S.links[it.id]?"Open your link":"Find this on the web"}" aria-label="Open link">${I_LINK}</a>`:""}
+      <button class="ghost${S.pin[it.id]?" pinned":""}" data-act="pin" aria-pressed="${!!S.pin[it.id]}" title="${S.pin[it.id]?"Unpin from today's plan":"Pin to today's plan"}" aria-label="Pin to today's plan">${I_PIN}</button>
       <button class="ghost" data-act="expand" aria-expanded="${ex}" aria-label="Steps, link and notes">${I_DOWN}</button>
     </div>
   </div>
@@ -378,6 +436,8 @@ function groupsForView(){
 function courseSub(c){const s=c.ids.reduce((a,id)=>a+BY[id].sec,0);return `${c.ids.length} items${s?` · ~${fmtH(s)} of timed video`:""}`}
 
 function render(){
+  if(S.view==="plan"){renderPlan();return}
+  document.body.classList.remove("plan-mode");
   const gs=groupsForView();
   if(S.sel&&!gs.some(g=>g.key===S.sel))S.sel=null;
   // rail
@@ -407,6 +467,7 @@ function stats(){
   sHrs.textContent=fmtH(ITEMS.filter(i=>!isDone(i.id)).reduce((a,i)=>a+i.sec,0));
   const t0=new Date();t0.setHours(0,0,0,0);
   sToday.textContent=Object.values(S.done).filter(ts=>ts>=t0.getTime()).length;
+  sStreak.textContent=typeof streak==="function"?streak():0;
   ringFg.style.strokeDashoffset=144.5*(1-all.p);
   ringMust.style.strokeDashoffset=88*(1-pm.p);
 }
@@ -434,6 +495,7 @@ list.addEventListener("click",e=>{
   if(act==="toggle"){const v=!isDone(id);setDone(id,v);save();
     if(fHide.checked||S.view==="next")render();else refreshRow(id);
     if(v)toast("Done · counts in every view")}
+  else if(act==="pin"){S.pin[id]?delete S.pin[id]:S.pin[id]=dstr(new Date());save();refreshRow(id);toast(S.pin[id]?"Pinned — first in today's plan":"Unpinned")}
   else if(act==="expand"){open.has(id)?open.delete(id):open.add(id);refreshRow(id)}
   else if(act==="step"){const st=stepsOf(BY[id])[+a.dataset.k];
     if(st.part!==undefined){const arr=S.parts[id]||Array(BY[id].parts.n).fill(false);arr[st.part]=!st.done;S.parts[id]=arr}
@@ -457,10 +519,370 @@ list.addEventListener("change",e=>{if(e.target.dataset.act==="link"){const id=e.
 function onSel(e){const b=e.target.closest("button[data-sel]");if(!b)return;S.sel=b.dataset.sel||null;save();render();window.scrollTo({top:0})}
 rail.addEventListener("click",onSel);mnav.addEventListener("click",onSel);
 function setView(v,sel=null){S.view=v;S.sel=sel;save();
-  [["course",vCourse],["area",vArea],["next",vNext]].forEach(([k,b])=>b.setAttribute("aria-pressed",k===v));render();window.scrollTo({top:0})}
-vCourse.onclick=()=>setView("course");vArea.onclick=()=>setView("area");vNext.onclick=()=>setView("next");
+  [["plan",vPlan],["course",vCourse],["area",vArea],["next",vNext]].forEach(([k,b])=>b.setAttribute("aria-pressed",k===v));render();window.scrollTo({top:0})}
+vPlan.onclick=()=>setView("plan");vCourse.onclick=()=>setView("course");vArea.onclick=()=>setView("area");vNext.onclick=()=>setView("next");
 let qt;q.addEventListener("input",()=>{clearTimeout(qt);qt=setTimeout(render,120)});
 [fTier,fType,fHide].forEach(el=>el.addEventListener("change",render));
+
+/* ================= PLAN: day-wise schedule + suggestions ================= */
+const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const pad=n=>String(n).padStart(2,"0");
+const dstr=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const dayStart=(d=new Date())=>{const x=new Date(d);x.setHours(0,0,0,0);return x};
+const parseD=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const fmtD=d=>d.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"});
+const fmtM=m=>m>=60?(Math.floor(m/60)+"h"+(m%60?" "+pad(m%60)+"m":"")):m+"m";
+const SPRINT_DEF={mode:"sprint",days:35,wd:6,we:7,off:[],imp:false,dsa:60,revDay:0,pace:1};
+function defaultPlan(){const t=dayStart();t.setDate(t.getDate()+SPRINT_DEF.days-1);return Object.assign({},SPRINT_DEF,{target:dstr(t)})}
+for(const k of ["prog","rev","log","daily","pin"])S[k]=S[k]||{};
+S.plan=Object.assign(defaultPlan(),S.plan||{});
+S.planShow=S.planShow||14;
+const sprint=()=>S.plan.mode==="sprint";
+const SHORT=["","Classical ML","Metrics","Deep learning","CV","NLP","GenAI/RAG","Stats & prob","Maths","DSA","SQL & CS","Case studies","Aptitude/OA","HR","Projects & resume"];
+
+/* estimated study minutes per item. Sprint mode assumes 1.5× playback and trims practice blocks to the core. */
+function itemEst(it){
+  const P=+S.plan.pace||1, t=it.title, sp=sprint(); let m;
+  if(it.sec)return Math.max(10,Math.round(it.sec/60*P/5)*5);
+  if((m=t.match(/\((\d+) Qs\)/)))return Math.max(60,Math.round(+m[1]*(sp?2:3)/5)*5);
+  if(it.parts)return Math.round(it.parts.n*16*P/5)*5;
+  if(it.course==="mk"&&/^Lecture/.test(t))return Math.round(110*P/5)*5;
+  if(it.course==="mk"&&it.type==="Assignment")return sp?120:180;
+  if(it.type==="Assignment")return sp?60:90;
+  if(it.type==="Lecture")return Math.round(20*P/5)*5;
+  if(/^NeetCode/.test(t))return sp?150:240;
+  if(/^LeetCode SQL|window functions/.test(t))return sp?105:150;
+  if(/^One strong/.test(t))return sp?480:1200;
+  if(/^Resume v|resume keyword|7-point/.test(t))return sp?90:120;
+  if(/^Mock|^Case drill/.test(t))return sp?60:75;
+  if(it.course==="iqb")return sp?90:120;
+  if(it.course==="self")return sp?30:45;
+  if(it.type==="Reading")return sp?45:60;
+  if(it.type==="Practice")return sp?60:90;
+  return 30;
+}
+function sprintNote(it){
+  const t=it.title;
+  if(/^NeetCode/.test(t))return "Sprint: 5–6 core problems, not the full list";
+  if(/^One strong/.test(t))return "Sprint: polish one project you already have — README, metrics, demo";
+  if(/\(\d+ Qs\)/.test(t))return "Sprint: answer aloud in 1–2 lines, mark the ones you can't";
+  if(it.parts||it.sec)return "Watch at 1.5×";
+  return "";
+}
+const partsLeft=it=>{const pd=S.parts[it.id]||[],o=[];for(let k=0;k<it.parts.n;k++)if(!pd[k])o.push(k);return o};
+function remMin(it){
+  if(isDone(it.id))return 0;
+  const e=itemEst(it);
+  if(it.parts)return Math.round(e*partsLeft(it).length/it.parts.n);
+  return Math.max(5,e-(S.prog[it.id]||0));
+}
+const isCoding=it=>it.course==="ext"&&/NeetCode|LeetCode|Write from scratch|window functions/.test(it.title);
+
+/* Full mode: learning → practice, Must before Important.
+   Sprint mode: core interview topics → DL/NLP/GenAI → cases, projects, question banks → aptitude, HR, mocks. */
+function bandOf(it){
+  if(!sprint())return (it.tier==="M"?0:2)+((it.course==="iqb"||it.course==="self")?1:0);
+  const a=it.areas[0];
+  if(a===12||a===13)return 3;
+  if(it.course==="iqb"||a===11)return 2;
+  if([1,2,7,9,10].includes(a))return 0;
+  return 1;
+}
+const VALUE={1:3,2:3,7:3,9:3,10:3,11:3,13:3,14:3,3:2,5:2,6:2,12:2,4:1,8:1};
+function roundRobin(items,per=2){
+  const m=new Map();items.forEach(it=>{const a=it.areas[0];m.has(a)||m.set(a,[]);m.get(a).push(it)});
+  const keys=[...m.keys()].sort((a,b)=>a-b),q=[];let any=true;
+  while(any){any=false;for(const k of keys){const l=m.get(k);for(let j=0;j<per&&l.length;j++){q.push(l.shift());any=true}}}
+  return q;
+}
+function capFor(d){
+  const P=S.plan,dw=d.getDay();
+  if(P.off.includes(dw))return {off:true,cap:0,code:0,rev:0};
+  let cap=Math.round(((dw===0||dw===6)?+P.we:+P.wd)*60);
+  const code=Math.min(+P.dsa||0,cap);cap-=code;
+  let rev=0;if(+P.revDay===dw&&cap>0){rev=Math.round(cap/2/5)*5;cap-=rev}
+  return {off:false,cap,code,rev};
+}
+function todayUsed(){
+  const k=dstr(new Date()), log=S.log[k]||[], ids=new Set(log.map(e=>e.id));
+  const t0=dayStart().getTime();
+  let m=log.reduce((a,e)=>a+e.min,0);
+  for(const [id,ts] of Object.entries(S.done))if(ts>=t0&&!ids.has(id)&&BY[id])m+=itemEst(BY[id]);
+  return m;
+}
+/* which items are in the plan; in Sprint mode, the lowest-value ones are cut to fit the days you have */
+function buildScope(){
+  const P=S.plan, target=parseD(P.target);
+  const open=ITEMS.filter(it=>!isDone(it.id)&&(S.pin[it.id]||P.imp||it.tier==="M"));
+  const pinned=open.filter(it=>S.pin[it.id]).sort((a,b)=>S.pin[a.id]<S.pin[b.id]?-1:1);
+  let rest=open.filter(it=>!S.pin[it.id]);
+  let coding=rest.filter(isCoding), main=rest.filter(it=>!isCoding(it)), cut=[];
+  if(sprint()){
+    let mainCap=0,codeCap=0;const d=dayStart();const used=todayUsed();
+    for(let n=0;d<=target;n++,d.setDate(d.getDate()+1)){const c=capFor(d);mainCap+=c.cap-(n===0?Math.max(0,used-c.code):0);codeCap+=c.code}
+    mainCap-=pinned.reduce((a,it)=>a+remMin(it),0);
+    const pick=(list,cap)=>{const keep=new Set();let s=0;
+      [...list].sort((a,b)=>(b.tier==="M")-(a.tier==="M")||(VALUE[b.areas[0]]||1)-(VALUE[a.areas[0]]||1)||remMin(a)-remMin(b))
+        .forEach(it=>{const m=remMin(it);if(s+m<=cap){keep.add(it);s+=m}});
+      return keep};
+    const km=pick(main,mainCap*0.97), kc=pick(coding,codeCap);
+    cut=[...main.filter(it=>!km.has(it)),...coding.filter(it=>!kc.has(it))];
+    main=main.filter(it=>km.has(it)); coding=coding.filter(it=>kc.has(it));
+  }
+  const q=[...pinned];
+  for(let b=0;b<4;b++)q.push(...roundRobin(main.filter(it=>bandOf(it)===b)));
+  const cq=[...roundRobin(coding.filter(it=>it.tier==="M"&&it.areas[0]!==7),1),...coding.filter(it=>it.tier==="M"&&it.areas[0]===7),...roundRobin(coding.filter(it=>it.tier!=="M"),1)];
+  return {main:q,coding:cq,cut};
+}
+function fill(q,left,out,splitMin=60){
+  const splittable=e=>e.parts?e.parts.length>1:e.rem>splitMin;
+  while(left>=15&&q.length){
+    let idx=-1;
+    for(let j=0;j<Math.min(q.length,6);j++){const e=q[j];if(e.rem<=left+15||splittable(e)){idx=j;break}}
+    if(idx<0)break;
+    const e=q[idx];
+    if(e.rem<=left+15){out.push({it:e.it,kind:"all",min:e.rem,parts:e.parts,started:e.started});left-=e.rem;q.splice(idx,1);continue}
+    if(e.parts){
+      const per=e.rem/e.parts.length,k=Math.floor(left/per); if(k<1)break;
+      const take=e.parts.splice(0,k),m=Math.round(per*k);
+      out.push({it:e.it,kind:"parts",parts:take,min:m});e.rem-=m;left-=m;
+    }else{const m=Math.floor(left/5)*5;out.push({it:e.it,kind:"time",min:m,after:e.rem-m});e.rem-=m;left-=m}
+    e.started=true;
+  }
+  return left;
+}
+function simulate(){
+  const sc=buildScope();
+  const wrap=it=>({it,rem:remMin(it),parts:it.parts?partsLeft(it):null,started:!!(S.prog[it.id]||(it.parts&&partsLeft(it).length<it.parts.n))});
+  const q=sc.main.map(wrap), cq=sc.coding.map(wrap);
+  const total=[...q,...cq].reduce((a,e)=>a+e.rem,0);
+  const days=[]; const d=dayStart(); let used=todayUsed();
+  const anyDoneWeek=Object.values(S.done).some(ts=>ts>=Date.now()-7*864e5);
+  for(let n=0;n<500&&(q.length||cq.length||n<S.planShow);n++){
+    const c=capFor(d);
+    if(n===0&&c.rev&&!anyDoneWeek){c.cap+=c.rev;c.rev=0}
+    const day={date:new Date(d),key:dstr(d),off:c.off,cap:c.cap,code:c.code,rev:c.rev,items:[],cItems:[]};
+    if(!c.off){
+      let codeLeft=c.code, mainLeft=c.cap;
+      if(n===0)mainLeft-=used;
+      if(codeLeft>0)fill(cq,codeLeft,day.cItems,30);
+      fill(q,mainLeft,day.items);
+    }
+    days.push(day); d.setDate(d.getDate()+1);
+  }
+  let finish=null;for(let i=days.length-1;i>=0;i--)if(days[i].items.length||days[i].cItems.length){finish=days[i].date;break}
+  return {days,total,finish,cut:sc.cut};
+}
+
+function entryLabel(e){
+  const it=e.it;
+  if(e.kind==="parts"||(e.kind==="all"&&e.parts&&e.parts.length<it.parts.n)){
+    const p=e.parts, u=it.parts.unit+"s";
+    const contig=p.every((v,i)=>i===0||v===p[i-1]+1);
+    return contig?(p.length===1?`${it.parts.unit} ${p[0]+1}`:`${u} ${p[0]+1}–${p[p.length-1]+1}`)+` of ${it.parts.n}`:`${p.length} more ${u.toLowerCase()}`;
+  }
+  if(e.kind==="time")return `${fmtM(e.min)} session · ${fmtM(e.after)} left after`;
+  if(e.kind==="all"&&e.started&&!it.parts)return "Finish it";
+  return "";
+}
+
+/* ticking a plan entry */
+function doEntry(e){
+  const id=e.it.id,key=dstr(new Date());let undo;
+  if(e.kind==="all"){undo={t:"done",parts:S.parts[id]?[...S.parts[id]]:null,prog:S.prog[id]||0,steps:JSON.stringify(S.steps[id]||null)};setDone(id,true);delete S.pin[id]}
+  else if(e.kind==="parts"){const arr=S.parts[id]||Array(e.it.parts.n).fill(false);e.parts.forEach(k=>arr[k]=true);S.parts[id]=arr;syncFromSteps(id);undo={t:"parts",parts:e.parts}}
+  else{S.prog[id]=(S.prog[id]||0)+e.min;undo={t:"prog",min:e.min}}
+  (S.log[key]=S.log[key]||[]).push({id,label:entryLabel(e),min:e.min,undo});
+  save();
+}
+function undoEntry(k){
+  const key=dstr(new Date()),e=S.log[key][k],id=e.id,u=e.undo;
+  if(u.t==="done"){delete S.done[id];if(u.parts)S.parts[id]=u.parts;else delete S.parts[id];S.prog[id]=u.prog;if(!u.prog)delete S.prog[id];const st=JSON.parse(u.steps);if(st)S.steps[id]=st}
+  else if(u.t==="parts"){const arr=S.parts[id]||[];u.parts.forEach(i=>arr[i]=false);S.parts[id]=arr;delete S.done[id]}
+  else{S.prog[id]=Math.max(0,(S.prog[id]||0)-u.min);if(!S.prog[id])delete S.prog[id];delete S.done[id]}
+  S.log[key].splice(k,1);if(!S.log[key].length)delete S.log[key];
+  save();
+}
+
+/* spaced revision: 1, 3, 7, 21 days after finishing */
+const GAPS=[1,3,7,21];
+function revDue(){
+  const now=Date.now(),out=[];
+  for(const [id,ts] of Object.entries(S.done)){
+    const it=BY[id]; if(!it||it.course==="self")continue;
+    const r=S.rev[id]||[]; if(r.length>=GAPS.length)continue;
+    const last=r.length?r[r.length-1]:ts, due=dayStart(new Date(last)).getTime()+GAPS[r.length]*864e5;
+    if(due<=now)out.push({it,due,n:r.length+1});
+  }
+  return out.sort((a,b)=>(a.it.tier===b.it.tier?a.due-b.due:a.it.tier==="M"?-1:1));
+}
+function activeDays(){
+  const s=new Set();
+  Object.values(S.done).forEach(ts=>s.add(dstr(new Date(ts))));
+  Object.values(S.rev).forEach(a=>a.forEach(ts=>s.add(dstr(new Date(ts)))));
+  Object.keys(S.log).forEach(k=>s.add(k));
+  Object.keys(S.daily).forEach(k=>S.daily[k]&&s.add(k.slice(0,10)));
+  return s;
+}
+function streak(){
+  const s=activeDays(),d=dayStart();
+  if(!s.has(dstr(d)))d.setDate(d.getDate()-1);
+  let n=0;while(s.has(dstr(d))){n++;d.setDate(d.getDate()-1)}
+  return n;
+}
+
+function planRow(e,k,{future}){
+  const it=e.it,lbl=entryLabel(e),link=linkOf(it),note=sprint()?sprintNote(it):"";
+  return `<div class="prow">
+    <button class="chk" role="checkbox" aria-checked="false" data-pact="do" data-k="${k}" aria-label="Done: ${esc(it.title)}${lbl?" — "+esc(lbl):""}" title="${future?"Doing it early — counts today":"Mark done"}">${CHECK}</button>
+    <div style="min-width:0"><div class="ttl">${esc(it.title)}</div>
+      <div class="sub"><span class="tier ${it.tier}">${it.tier==="M"?"Must":"Imp."}</span>${lbl?`<span class="sp">${esc(lbl)}</span>`:""}<span>${esc(SHORT[it.areas[0]])}</span><span>${esc(COURSE_NAME[it.course].replace(/ —.*$/,""))}</span>${isCoding(it)?`<span class="note">Coding track</span>`:""}${note?`<span class="note">${esc(note)}</span>`:""}${S.pin[it.id]?`<span style="color:var(--must)">Pinned</span>`:""}</div></div>
+    <div class="side"><span class="dur">${fmtM(e.min)}</span>${link?`<a class="ghost" href="${esc(link)}" target="_blank" rel="noopener" aria-label="Open link">${I_LINK}</a>`:""}</div>
+  </div>`;
+}
+function fixedRow(kind,min,day,today){
+  const k=day.key+":"+kind, d=!!S.daily[k];
+  const title=kind==="dsa"?"Coding practice — 2 problems from NeetCode / LeetCode":"Weekly revision — re-read this week's notes, redo one thing per topic, then a 30-min timed mock";
+  return `<div class="prow fixed${d?" dn":""}">
+    <button class="chk" role="checkbox" aria-checked="${d}" data-pact="fixed" data-key="${k}" ${today?"":"disabled style='opacity:.35;cursor:default'"} aria-label="${esc(title)}">${CHECK}</button>
+    <div style="min-width:0"><div class="ttl">${esc(title)}</div><div class="sub">${kind==="dsa"?"Daily coding track":"Revision day"}</div></div>
+    <div class="side"><span class="dur">${fmtM(min)}</span></div></div>`;
+}
+function weekGlance(sim,target){
+  const out=[];const days=sim.days.filter(d=>d.date<=target);
+  for(let w=0;w*7<days.length;w++){
+    const ds=days.slice(w*7,w*7+7), by={};let tot=0;
+    ds.forEach(d=>d.items.forEach(e=>{const a=e.it.areas[0];by[a]=(by[a]||0)+e.min;tot+=e.min}));
+    const top=Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([a])=>SHORT[a]);
+    const code=ds.reduce((a,d)=>a+d.cItems.reduce((x,e)=>x+e.min,0)+(d.cItems.length?0:d.code),0);
+    out.push(`<div class="wk"><div class="wk-h"><b>Week ${w+1}</b><span>${fmtD(ds[0].date).replace(/^\w+, /,"")} – ${fmtD(ds[ds.length-1].date).replace(/^\w+, /,"")}</span></div><div class="wk-t">${top.length?esc(top.join(" · ")):"Buffer / revision"}</div><div class="wk-s">${fmtH(tot*60)} topics · ${fmtH(code*60)} coding</div></div>`);
+  }
+  return `<div class="weeks">${out.join("")}</div>`;
+}
+
+let PLAN=null;
+function renderPlan(){
+  document.body.classList.add("plan-mode");
+  const P=S.plan, sim=simulate(); PLAN=sim;
+  const target=parseD(P.target), today=dayStart(), sp=sprint();
+  const daysToTarget=Math.max(0,Math.round((target-today)/864e5)+1);
+  const ok=sim.finish?sim.finish<=target:true;
+  const late=sim.finish?Math.round((sim.finish-target)/864e5):0;
+  const must=ITEMS.filter(i=>i.tier==="M"), mustCut=sim.cut.filter(i=>i.tier==="M");
+  const cutMin=sim.cut.reduce((a,i)=>a+remMin(i),0);
+  const coveredMust=must.length-mustCut.length;
+  let verdict;
+  if(!sim.total&&!sim.cut.length)verdict=`<div class="verdict ok"><div><div class="big">Everything in the plan is done.</div><p>Switch to Full mode or tick on Important items for more.</p></div></div>`;
+  else if(sp)verdict=`<div class="verdict ${ok?"ok":"bad"}"><div style="min-width:0">
+    <div class="big">${ok?`${daysToTarget}-day sprint — finishes ${fmtD(sim.finish||target)}`:`Pinned items push you ${late} days past your end date`}</div>
+    <p>Covers ${coveredMust} of ${must.length} Must items (${Math.round(coveredMust/must.length*100)}%). ${sim.cut.length?`${sim.cut.length} lower-value items (${fmtH(cutMin*60)}) are cut to fit — they're listed at the bottom; pull any back if you get ahead.`:"Nothing had to be cut."}</p></div>
+    <div class="vnums"><div class="stat"><b>${fmtH(sim.total*60)}</b><small>In this sprint</small></div><div class="stat"><b>${fmtH(cutMin*60)}</b><small>Cut</small></div><div class="stat"><b>${daysToTarget}</b><small>Days left</small></div></div></div>`;
+  else{
+    let avail=0;sim.days.forEach((d,i)=>{if(d.date<=target)avail+=Math.max(0,d.cap+d.code-(i===0?todayUsed():0))});
+    const studyDays=sim.days.filter(d=>d.date<=target&&!d.off).length||1;
+    const needExtra=Math.ceil(Math.max(0,sim.total-avail)/studyDays/5)*5;
+    verdict=`<div class="verdict ${ok?"ok":"bad"}"><div style="min-width:0">
+    <div class="big">${ok?`On track — done by ${fmtD(sim.finish)}`:`Behind — at this pace you finish ${fmtD(sim.finish)}`}</div>
+    <p>${ok?`${Math.max(0,Math.round((target-sim.finish)/864e5))} spare days before ${fmtD(target)}.`:`${late} days after ${fmtD(target)}. Add about ${fmtM(needExtra)} a day, or switch to Sprint mode to cut the plan down to fit.`}</p></div>
+    <div class="vnums"><div class="stat"><b>${fmtH(sim.total*60)}</b><small>Study left</small></div><div class="stat"><b>${fmtH(Math.max(0,avail)*60)}</b><small>Time till target</small></div><div class="stat"><b>${daysToTarget}</b><small>Days to target</small></div></div></div>`;
+  }
+
+  // suggestions
+  const due=revDue();
+  const mustAreas=AREAS.map(a=>{const m=a.ids.filter(id=>BY[id].tier==="M");return {a,p:prog(m)}}).filter(x=>x.p.n&&x.p.d<x.p.n).sort((x,y)=>x.p.p-y.p.p||(VALUE[y.a.n]||1)-(VALUE[x.a.n]||1));
+  const weak=mustAreas[0];
+  const todaySet=new Set([...(sim.days[0]?.items||[]),...(sim.days[0]?.cItems||[])].map(e=>e.it.id));
+  const quick=ITEMS.filter(it=>!isDone(it.id)&&it.tier==="M"&&!todaySet.has(it.id)&&remMin(it)<=30).sort((a,b)=>(VALUE[b.areas[0]]||1)-(VALUE[a.areas[0]]||1)||remMin(a)-remMin(b)).slice(0,3);
+  const sugg=`<div class="sugg">
+    <div class="sbox"><h4>Revise today · spaced repetition</h4>${due.length?`<ul class="mini">${due.slice(0,5).map(x=>`<li><span title="${esc(x.it.title)}">${esc(x.it.title)}</span><button class="sm-btn" data-pact="rev" data-id="${x.it.id}" title="Revision ${x.n} of 4">Revised ✓</button></li>`).join("")}</ul>${due.length>5?`<p style="margin-top:6px;color:var(--muted);font-size:12px">+${due.length-5} more due</p>`:""}`:`<p style="color:var(--muted)">Nothing due yet. Each item you finish comes back for a 10-minute revision after 1, 3, 7 and 21 days.</p>`}</div>
+    <div class="sbox"><h4>Weakest area</h4>${weak?`<p><b>${esc(weak.a.name)}</b> — ${Math.round(weak.p.p*100)}% of Must items done (${weak.p.d}/${weak.p.n}).</p><p style="color:var(--muted);font-size:13px">Study from ${esc(weak.a.res)}.</p><button class="sm-btn" data-pact="area" data-n="${weak.a.n}">Open this area</button> <button class="sm-btn" data-pact="pinarea" data-n="${weak.a.n}">Put its next item in today</button>`:`<p style="color:var(--muted)">All Must items done.</p>`}</div>
+    <div class="sbox"><h4>Quick wins · under 30 min</h4>${quick.length?`<ul class="mini">${quick.map(it=>`<li><span title="${esc(it.title)}">${esc(it.title)}</span><button class="sm-btn" data-pact="pin" data-id="${it.id}">Add to today</button></li>`).join("")}</ul>`:`<p style="color:var(--muted)">No short Must items left.</p>`}</div>
+  </div>`;
+
+  const key=dstr(today), log=S.log[key]||[], logIds=new Set(log.map(e=>e.id));
+  const doneToday=log.map((e,k)=>`<div class="prow dn"><button class="chk" role="checkbox" aria-checked="true" data-pact="undo" data-k="${k}" aria-label="Undo: ${esc(BY[e.id].title)}">${CHECK}</button><div style="min-width:0"><div class="ttl">${esc(BY[e.id].title)}</div><div class="sub">${e.label?`<span class="sp">${esc(e.label)}</span>`:""}<span>Done today</span></div></div><div class="side"><span class="dur">${fmtM(e.min)}</span></div></div>`).join("")
+    + Object.entries(S.done).filter(([id,ts])=>ts>=today.getTime()&&!logIds.has(id)&&BY[id]).map(([id])=>`<div class="prow dn"><button class="chk" role="checkbox" aria-checked="true" data-pact="unall" data-id="${id}" aria-label="Undo: ${esc(BY[id].title)}">${CHECK}</button><div style="min-width:0"><div class="ttl">${esc(BY[id].title)}</div><div class="sub"><span>Ticked in another view today</span></div></div><div class="side"><span class="dur">${fmtM(itemEst(BY[id]))}</span></div></div>`).join("");
+
+  const shown=sim.days.slice(0,S.planShow);
+  const daysHTML=shown.map((d,i)=>{
+    const isT=i===0, label=isT?"Today":i===1?"Tomorrow":fmtD(d.date), past=d.date>target;
+    if(d.off)return `<div class="day off"><div class="d-head"><b>${label}</b>${isT?"":`<span>${DOW[d.date.getDay()]}</span>`}<span class="load">Rest day</span></div>${isT&&doneToday?doneToday:""}</div>`;
+    const load=d.items.reduce((a,e)=>a+e.min,0)+(d.cItems.length?d.cItems.reduce((a,e)=>a+e.min,0):d.code)+d.rev+(isT?todayUsed():0);
+    const cap=d.cap+d.code+d.rev;
+    const lastDays=sp&&!past&&Math.round((target-d.date)/864e5)<3;
+    return `<div class="day${isT?" today":""}${past?" past-target":""}">
+      <div class="d-head"><b>${label}</b>${isT?`<span>${fmtD(d.date)}</span>`:""}${sp&&!past?`<span class="tag">Day ${i+1} of ${daysToTarget}</span>`:""}${d.rev?`<span class="tag rev">Revision day</span>`:""}${lastDays?`<span class="tag late">Final stretch — mocks & HR</span>`:""}${past?`<span class="tag late">After target</span>`:""}<span class="load">${fmtM(load)} / ${fmtM(cap)}</span></div>
+      ${isT?doneToday:""}
+      ${d.cItems.length?d.cItems.map((e,k)=>planRow(e,i+":c:"+k,{future:!isT})).join(""):d.code?fixedRow("dsa",d.code,d,isT):""}
+      ${d.rev?fixedRow("rev",d.rev,d,isT):""}
+      ${d.items.map((e,k)=>planRow(e,i+":m:"+k,{future:!isT})).join("")}
+      ${isT&&!d.items.length&&sim.total&&d.cap>0?`<div class="prow"><span></span><div class="sub">Today's topic time is used up. Anything you tick now pulls tomorrow forward.</div><span></span></div>`:""}
+    </div>`;
+  }).join("");
+
+  const offBoxes=[1,2,3,4,5,6,0].map(dw=>`<label><input type="checkbox" data-pset="off" value="${dw}" ${P.off.includes(dw)?"checked":""}>${DOW[dw]}</label>`).join("");
+  const modeBar=`<div class="modebar"><div class="seg" role="group" aria-label="Plan mode">
+      <button data-pact="mode" data-m="sprint" aria-pressed="${sp}">Sprint · finish in 30–45 days</button>
+      <button data-pact="mode" data-m="full" aria-pressed="${!sp}">Full syllabus</button></div>
+    ${sp?`<div class="seg" role="group" aria-label="Sprint length">${[30,35,40,45].map(n=>`<button data-pact="days" data-n="${n}" aria-pressed="${daysToTarget===n}">${n} days</button>`).join("")}</div>`:""}
+    <span class="modehint">${sp?"Must items only · videos at 1.5× · the lowest-value items are cut to fit":"Everything, at a relaxed pace"}</span></div>`;
+  const settings=`<details class="pcard" ${S.planSet?"open":""} id="psetBox"><summary>Daily hours & settings <small>Ends ${fmtD(target)} · ${P.wd}h weekdays · ${P.we}h weekends · ${P.dsa}m coding inside that</small></summary>
+    <div class="settings">
+      <label class="fld"><span>End date</span><input type="date" data-pset="target" value="${P.target}" min="${dstr(today)}"></label>
+      <label class="fld"><span>Hours on weekdays</span><input type="number" data-pset="wd" value="${P.wd}" min="0" max="16" step="0.5"></label>
+      <label class="fld"><span>Hours on weekends</span><input type="number" data-pset="we" value="${P.we}" min="0" max="16" step="0.5"></label>
+      <label class="fld"><span>Coding per day (min)</span><input type="number" data-pset="dsa" value="${P.dsa}" min="0" max="240" step="15"></label>
+      <label class="fld"><span>Weekly revision day</span><select data-pset="revDay"><option value="-1">None</option>${[0,1,2,3,4,5,6].map(dw=>`<option value="${dw}" ${+P.revDay===dw?"selected":""}>${DOW[dw]}</option>`).join("")}</select></label>
+      <label class="fld"><span>Video time ×</span><select data-pset="pace">${[[0.75,"0.75 (2× speed)"],[1,"1 (1.5× speed + notes)"],[1.25,"1.25 (normal + notes)"],[1.5,"1.5 (slow, detailed notes)"]].map(([v,l])=>`<option value="${v}" ${+P.pace===v?"selected":""}>${l}</option>`).join("")}</select></label>
+      <div class="fld" style="grid-column:span 2"><span>Days off (tap to turn off)</span><div class="dows">${offBoxes}</div></div>
+      ${sp?"":`<label class="tog" style="align-self:end"><input type="checkbox" data-pset="imp" ${P.imp?"checked":""}> Include Important items</label>`}
+    </div></details>`;
+  const cutList=sim.cut.length?`<details class="pcard"><summary>Cut to fit — ${sim.cut.length} items · ${fmtH(cutMin*60)} <small>Do these only if you're ahead</small></summary>
+    <ul class="mini cutl">${[...sim.cut].sort((a,b)=>(a.tier==="M"?0:1)-(b.tier==="M"?0:1)||(VALUE[b.areas[0]]||1)-(VALUE[a.areas[0]]||1)).map(it=>`<li><span title="${esc(it.title)}"><span class="tier ${it.tier}">${it.tier==="M"?"Must":"Imp."}</span> ${esc(it.title)} <em>· ${esc(SHORT[it.areas[0]])} · ${fmtM(remMin(it))}</em></span><button class="sm-btn" data-pact="pin" data-id="${it.id}">Add back</button></li>`).join("")}</ul></details>`:"";
+
+  list.innerHTML=`<div class="plan">
+    ${modeBar}
+    <section class="pcard">${verdict}${sp&&daysToTarget<=70?weekGlance(sim,target):""}${sugg}</section>
+    ${settings}
+    <div class="days">${daysHTML}</div>
+    ${sim.days.length>S.planShow?`<div class="more"><button class="icon-btn" data-pact="more">Show next 14 days</button></div>`:""}
+    ${cutList}
+    <p style="color:var(--muted);font-size:12.5px;margin:0">The plan rebuilds itself every time you open it: anything you skip moves to the next free slot, and anything you finish early pulls later work forward. Pin an item (📌 in Courses or Areas) to put it first.</p>
+  </div>`;
+  stats();
+}
+list.addEventListener("click",e=>{
+  if(S.view!=="plan")return;
+  const b=e.target.closest("[data-pact]"); if(!b||b.disabled)return;
+  const a=b.dataset.pact,P=S.plan;
+  if(a==="do"){const [i,t,k]=b.dataset.k.split(":");const day=PLAN.days[+i];const en=(t==="c"?day.cItems:day.items)[+k];doEntry(en);toast(en.kind==="all"?"Done · next item moves up":"Progress saved")}
+  else if(a==="undo")undoEntry(+b.dataset.k);
+  else if(a==="unall"){setDone(b.dataset.id,false);save()}
+  else if(a==="fixed"){const k=b.dataset.key;S.daily[k]?delete S.daily[k]:S.daily[k]=true;save()}
+  else if(a==="rev"){(S.rev[b.dataset.id]=S.rev[b.dataset.id]||[]).push(Date.now());save();toast("Revision logged")}
+  else if(a==="pin"){S.pin[b.dataset.id]=dstr(new Date());save();toast("Added to today")}
+  else if(a==="pinarea"){const ar=AREAS[+b.dataset.n-1];const id=ar.ids.find(id=>!isDone(id)&&BY[id].tier==="M");if(id){S.pin[id]=dstr(new Date());save();toast("Added to today")}}
+  else if(a==="area"){setView("area","a:"+b.dataset.n);return}
+  else if(a==="more"){S.planShow+=14;save()}
+  else if(a==="mode"){const m=b.dataset.m;if(m===P.mode)return;
+    if(m==="sprint"){const t=dayStart();t.setDate(t.getDate()+SPRINT_DEF.days-1);Object.assign(P,{mode:"sprint",target:dstr(t),pace:1,imp:false,dsa:Math.max(+P.dsa,60)})}
+    else{const t=dayStart();t.setDate(t.getDate()+89);Object.assign(P,{mode:"full",target:dstr(t),pace:1.25,imp:true})}
+    save()}
+  else if(a==="days"){const t=dayStart();t.setDate(t.getDate()+(+b.dataset.n)-1);P.target=dstr(t);save()}
+  else return;
+  renderPlan();
+});
+list.addEventListener("change",e=>{
+  const el=e.target; if(S.view!=="plan"||!el.dataset.pset)return;
+  const k=el.dataset.pset,P=S.plan;
+  if(k==="off"){const v=+el.value;P.off=el.checked?[...new Set([...P.off,v])]:P.off.filter(x=>x!==v)}
+  else if(k==="imp")P.imp=el.checked;
+  else if(k==="target"){if(el.value)P.target=el.value}
+  else if(k==="revDay")P.revDay=+el.value;
+  else {const v=parseFloat(el.value);if(!isNaN(v)&&v>=0)P[k]=v}
+  S.planSet=true;save();setTimeout(renderPlan,0);
+});
+list.addEventListener("toggle",e=>{if(e.target.id==="psetBox"){S.planSet=e.target.open;save()}},true);
 
 /* theme */
 function applyTheme(){const t=(()=>{try{return localStorage.getItem(KEY+".theme")}catch(e){return null}})();if(t)document.documentElement.dataset.theme=t}
@@ -469,14 +891,14 @@ themeBtn.onclick=()=>{const dark=document.documentElement.dataset.theme?document
 applyTheme();
 
 /* backup */
-dataBtn.onclick=()=>{dlgTxt.value=JSON.stringify({app:"lakshya",v:2,at:new Date().toISOString(),done:S.done,parts:S.parts,steps:S.steps,links:S.links,notes:S.notes});dlg.showModal?dlg.showModal():dlg.setAttribute("open","")};
+dataBtn.onclick=()=>{dlgTxt.value=JSON.stringify({app:"lakshya",v:2,at:new Date().toISOString(),done:S.done,parts:S.parts,steps:S.steps,links:S.links,notes:S.notes,plan:S.plan,prog:S.prog,rev:S.rev,log:S.log,daily:S.daily,pin:S.pin});dlg.showModal?dlg.showModal():dlg.setAttribute("open","")};
 dlgClose.onclick=()=>dlg.close();
 let framed=false;try{framed=window.top!==window}catch(e){framed=true}
 if(framed)dlgFile.hidden=true;
 dlgCopy.onclick=()=>{navigator.clipboard?.writeText(dlgTxt.value).then(()=>toast("Backup copied"),()=>{dlgTxt.select();toast("Selected — press Ctrl/Cmd+C")})??(dlgTxt.select())};
 dlgFile.onclick=()=>{try{const b=new Blob([dlgTxt.value],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="lakshya-backup-"+new Date().toISOString().slice(0,10)+".json";document.body.append(a);a.click();a.remove()}catch(e){toast("Download blocked here — use Copy")}};
 dlgRestore.onclick=()=>{try{const d=JSON.parse(dlgTxt.value);if(d.app!=="lakshya")throw 0;
-  Object.assign(S,{done:d.done||{},parts:d.parts||{},steps:d.steps||{},links:d.links||{},notes:d.notes||{}});save();render();dlg.close();toast("Progress restored")}
+  Object.assign(S,{done:d.done||{},parts:d.parts||{},steps:d.steps||{},links:d.links||{},notes:d.notes||{},prog:d.prog||{},rev:d.rev||{},log:d.log||{},daily:d.daily||{},pin:d.pin||{}});if(d.plan)S.plan=Object.assign(defaultPlan(),d.plan);save();render();dlg.close();toast("Progress restored")}
   catch(e){toast("That text isn't a Lakshya backup. Paste the full backup and try again.")}};
 
 /* install (PWA) */
@@ -492,5 +914,4 @@ setView(S.view||"course",S.sel);
 })();
 </script>
 
-</body>
-</html>
+</body></html>
